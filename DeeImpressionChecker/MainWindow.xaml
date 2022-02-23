@@ -1,0 +1,80 @@
+﻿<Window x:Class="DeeImpressionChecker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeeImpressionChecker"
+        mc:Ignorable="d"
+        Title="DEE Impression Checker" Height="460" Width="800" Closed="Window_Closed" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="CellColor" TargetType="DataGridCell">
+            <Style.Triggers>
+                <!-- Not selected row -->
+                <DataTrigger Binding="{Binding IsImpressioned, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="false">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="White"/>
+                </DataTrigger>
+                <!-- Selected row -->
+                <DataTrigger Binding="{Binding IsImpressioned, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="LightGreen"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Venue URL -->
+        <Label Content="Venue URL:" HorizontalAlignment="Left" Margin="45,25,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="VenueUrlTextBox" HorizontalAlignment="Left" Margin="155,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="470" Height="26"/>
+        <Button x:Name="GetListButton" Content="Get list" HorizontalAlignment="Left" Margin="660,25,0,0" VerticalAlignment="Top" Height="26" Width="95" Click="GetListButton_Click"/>
+
+        <!-- Impression ID -->
+        <Label Content="Impression ID:" HorizontalAlignment="Left" Margin="45,63,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="ImpressionIdTextBox" HorizontalAlignment="Left" Margin="155,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="470" Height="26" TextChanged="ImpressionIdTextBox_TextChanged"/>
+        <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Left" Margin="660,63,0,0" VerticalAlignment="Top" Height="26" Width="95" Click="StartButton_Click"/>
+
+        <!-- Number -->
+        <Label Content="EntryBMS:" HorizontalAlignment="Left" Margin="45,103,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="EntryBmsLabel" HorizontalAlignment="Left" Margin="116,103,0,0" VerticalAlignment="Top"/>
+
+        <Label Content="Impressioned:" HorizontalAlignment="Left" Margin="170,103,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="ImpressionedLabel" HorizontalAlignment="Left" Margin="257,103,0,0" VerticalAlignment="Top"/>
+
+        <Label Content="Residual:" HorizontalAlignment="Left" Margin="306,103,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="ResidualLabel" HorizontalAlignment="Left" Margin="368,103,0,0" VerticalAlignment="Top"/>
+
+        <CheckBox x:Name="HideImpressionedSongsCheckBox" Content="Hide impressioned song" HorizontalAlignment="Left" Margin="457,109,0,0" VerticalAlignment="Top" Checked="HideImpressionedSongsCheckBox_Checked" Unchecked="HideImpressionedSongsCheckBox_Unchecked"/>
+
+        <!-- Song list -->
+        <DataGrid x:Name="TableListView" Margin="45,134,45,51" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Avoid" CellStyle="{StaticResource CellColor}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsAvoided, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ImpressionAvoidCheckBox_Click"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn  Header="No." Binding="{Binding Num}" CellStyle="{StaticResource CellColor}"/>
+
+                <DataGridHyperlinkColumn Header="Song title" Binding="{Binding SongTitle}" CellStyle="{StaticResource CellColor}">
+                    <DataGridHyperlinkColumn.ElementStyle>
+                        <Style>
+                            <EventSetter Event="Hyperlink.Click" Handler="SongTitle_Click"/>
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>
+                </DataGridHyperlinkColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Status -->
+        <StatusBar VerticalAlignment="Bottom">
+            <Label x:Name="StatusLabel"/>
+            <Separator/>
+            <ProgressBar x:Name="StatusProgressBar" Height="20" VerticalAlignment="Bottom" Width="617"/>
+        </StatusBar>
+    </Grid>
+</Window>

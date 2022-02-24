@@ -97,7 +97,12 @@ namespace DeeImpressionChecker.Classes
         private static string GetDataSourceName(string id, string url)
         {
             //return (id + url.Split('=').Last()).GetHashCode().ToString() + ".sqlite";
-            return (id + url.Split('=').Last()) + ".sqlite";
+            var dir = $"{System.IO.Directory.GetCurrentDirectory()}\\Database\\";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            return $"{dir}{(id + url.Split('=').Last())}.sqlite";
         }
     }
 }

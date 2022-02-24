@@ -18,8 +18,8 @@ Get the impression status of a specific ID at the venue DEE2(https://manbow.noth
 1. Check one page per second to see if it's been impressed.
 
 [1] (VOTE) ID below name, ex. (XXXXXXXXXXXXXXXXXXJP) -> input XXXXXXXXXXXXXXXXXXJP, 
-or ID written later date, ex. 2022”N02ŒŽ23“ú22:22(XXXXXXXXXXXXXXXXXXJP) -> input XXXXXXXXXXXXXXXXXXJP,
-or nameŸXXXXXXXXXXXX -> input XXXXXXXXXXXX,
+or ID written later date, ex. 2022å¹´02æœˆ23æ—¥22:22(XXXXXXXXXXXXXXXXXXJP) -> input XXXXXXXXXXXXXXXXXXJP,
+or nameâ—†XXXXXXXXXXXX -> input XXXXXXXXXXXX,
 or name(not recommended).
 
 # License

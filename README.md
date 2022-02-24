@@ -24,4 +24,10 @@ or name(not recommended).
 
 # License
 
-MIT License
+The source code is licensed MIT.
+
+```
+AngleSharp (MIT)                             https://github.com/AngleSharp/AngleSharp
+Microsoft.Data.Sqlite.Core (MIT)             https://github.com/dotnet/efcore
+SQLitePCLRaw.bundle_e_sqlite3 (Apache-2.0)   https://github.com/ericsink/SQLitePCL.raw
+```

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -39,14 +40,14 @@ namespace DeeImpressionChecker
             }
 
             // Impression ID length is cheked.
-            if (!SQLAccess.ExistsTableFile(ImpressionIdTextBox.Text, VenueUrlTextBox.Text))
+            if (!SQLAccess.ExistsTableFile(GetImpressionIdForSql(), VenueUrlTextBox.Text))
             {
                 SetStatusListNone();
                 return;
             }
 
             // If database has been created, load database.
-            SongDataTable.Table = SQLAccess.GetTable(ImpressionIdTextBox.Text, VenueUrlTextBox.Text);
+            SongDataTable.Table = SQLAccess.GetTable(GetImpressionIdForSql(), VenueUrlTextBox.Text);
             TableListView.ItemsSource = SongDataTable.Table;
             SetStatusWait();
         }
@@ -64,9 +65,9 @@ namespace DeeImpressionChecker
             Properties.Settings.Default.Save();
 
             // Save table
-            if (SQLAccess.ExistsTableFile(ImpressionIdTextBox.Text, VenueUrlTextBox.Text))
+            if (SQLAccess.ExistsTableFile(GetImpressionIdForSql(), VenueUrlTextBox.Text))
             {
-                SQLAccess.SetImpressionState(ImpressionIdTextBox.Text, VenueUrlTextBox.Text, SongDataTable.Table.ToList());
+                SQLAccess.SetImpressionState(GetImpressionIdForSql(), VenueUrlTextBox.Text, SongDataTable.Table.ToList());
             }
         }
 
@@ -132,8 +133,8 @@ namespace DeeImpressionChecker
                 TableListView.ItemsSource = SongDataTable.Table;
 
                 // Save
-                SQLAccess.CreateTable(ImpressionIdTextBox.Text, VenueUrlTextBox.Text);
-                SQLAccess.SaveSongDataTable(ImpressionIdTextBox.Text, VenueUrlTextBox.Text, SongDataTable.Table.ToList());
+                SQLAccess.CreateTable(GetImpressionIdForSql(), VenueUrlTextBox.Text);
+                SQLAccess.SaveSongDataTable(GetImpressionIdForSql(), VenueUrlTextBox.Text, SongDataTable.Table.ToList());
 
                 SetStatusWait();
             }
@@ -166,7 +167,7 @@ namespace DeeImpressionChecker
                 SetStatusCompleted();
 
                 // Save
-                SQLAccess.SetImpressionState(ImpressionIdTextBox.Text, VenueUrlTextBox.Text, SongDataTable.Table.ToList());
+                SQLAccess.SetImpressionState(GetImpressionIdForSql(), VenueUrlTextBox.Text, SongDataTable.Table.ToList());
             }
             catch (Exception ex)
             {
@@ -210,6 +211,24 @@ namespace DeeImpressionChecker
                 SongDataTable.Table[i].IsImpressioned = await HtmlGetter.IsImpressioned(SongDataTable.Table[i].Url, ImpressionIdTextBox.Text);
                 SetStatusProcessing();
                 await Task.Delay(1000);
+            }
+        }
+
+        /// <summary>
+        /// Get impression ID for SQL
+        /// </summary>
+        /// <returns></returns>
+        private string GetImpressionIdForSql()
+        {
+            try
+            {
+                string ret = Regex.Replace(ImpressionIdTextBox.Text, @"[\\/:*?""<>|]", "",
+                                     RegexOptions.None, TimeSpan.FromSeconds(1.5));
+                return ret;
+            }
+            catch
+            {
+                return String.Empty;
             }
         }
 

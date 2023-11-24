@@ -185,7 +185,11 @@ namespace DeeImpressionChecker
         {
             try
             {
-                Process.Start(SongDataTable.Table[TableListView.SelectedIndex].Url);
+                var item = TableListView.SelectedItem as SongDetail;
+                if (item != null)
+                {
+                    Process.Start(item.Url);
+                }
             }
             catch (Exception ex)
             {

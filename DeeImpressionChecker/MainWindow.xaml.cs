@@ -1,10 +1,12 @@
 ﻿using DeeImpressionChecker.Classes;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace DeeImpressionChecker
 {
@@ -13,6 +15,8 @@ namespace DeeImpressionChecker
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CollectionViewSource _collectionViewSource = new CollectionViewSource();
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -48,7 +52,10 @@ namespace DeeImpressionChecker
 
             // If database has been created, load database.
             SongDataTable.Table = SQLAccess.GetTable(GetImpressionIdForSql(), VenueUrlTextBox.Text);
-            TableListView.ItemsSource = SongDataTable.Table;
+            _collectionViewSource.Source = SongDataTable.Table;
+            _collectionViewSource.Filter += new FilterEventHandler(SongListFilterByIsFinished);
+            _collectionViewSource.SortDescriptions.Add(new SortDescription("Num", ListSortDirection.Ascending));
+            TableListView.ItemsSource = _collectionViewSource.View;
             SetStatusWait();
         }
 
@@ -88,7 +95,8 @@ namespace DeeImpressionChecker
         /// <param name="e">e</param>
         private void HideImpressionedSongsCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            TableListView.ItemsSource = SongDataTable.AvoidFinishedTable;
+            _collectionViewSource.SortDescriptions.Clear();
+            _collectionViewSource.SortDescriptions.Add(new SortDescription("Num", ListSortDirection.Ascending));
         }
 
         /// <summary>
@@ -98,8 +106,8 @@ namespace DeeImpressionChecker
         /// <param name="e">e</param>
         private void HideImpressionedSongsCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            // All song view.
-            TableListView.ItemsSource = SongDataTable.Table;
+            _collectionViewSource.SortDescriptions.Clear();
+            _collectionViewSource.SortDescriptions.Add(new SortDescription("Num", ListSortDirection.Ascending));
         }
 
         /// <summary>
@@ -130,7 +138,10 @@ namespace DeeImpressionChecker
 
                 // Get table
                 SongDataTable.Table = await HtmlGetter.GetSongTable(VenueUrlTextBox.Text);
-                TableListView.ItemsSource = SongDataTable.Table;
+                _collectionViewSource.Source = SongDataTable.Table;
+                _collectionViewSource.Filter += new FilterEventHandler(SongListFilterByIsFinished);
+                _collectionViewSource.SortDescriptions.Add(new SortDescription("Num", ListSortDirection.Ascending));
+                TableListView.ItemsSource = _collectionViewSource.View;
 
                 // Save
                 SQLAccess.CreateTable(GetImpressionIdForSql(), VenueUrlTextBox.Text);
@@ -233,6 +244,27 @@ namespace DeeImpressionChecker
             catch
             {
                 return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// If IsFinished is true, hide the row.
+        /// </summary>
+        /// <param name="sender">sender</param>
+        /// <param name="e">e</param>
+        private void SongListFilterByIsFinished(object sender, FilterEventArgs e)
+        {
+            var obj = e.Item as SongDetail;
+            if (obj != null)
+            {
+                if (HideImpressionedSongsCheckBox.IsChecked == true)
+                {
+                    e.Accepted = !obj.IsImpressioned;
+                }
+                else
+                {
+                    e.Accepted = true;
+                }
             }
         }
 

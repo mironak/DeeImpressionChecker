@@ -48,7 +48,7 @@
         <CheckBox x:Name="HideImpressionedSongsCheckBox" Content="Hide impressioned song" HorizontalAlignment="Left" Margin="457,109,0,0" VerticalAlignment="Top" Checked="HideImpressionedSongsCheckBox_Checked" Unchecked="HideImpressionedSongsCheckBox_Unchecked"/>
 
         <!-- Song list -->
-        <DataGrid x:Name="TableListView" Margin="45,134,45,51" AutoGenerateColumns="False" CanUserAddRows="False">
+        <DataGrid x:Name="TableListView" Margin="45,134,45,51" AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Avoid" CellStyle="{StaticResource CellColor}">
                     <DataGridTemplateColumn.CellTemplate>

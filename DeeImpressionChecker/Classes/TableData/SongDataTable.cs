@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Data;
 
 namespace DeeImpressionChecker.Classes
 {
@@ -17,19 +15,6 @@ namespace DeeImpressionChecker.Classes
         /// Song table
         /// </summary>
         public static ObservableCollection<SongDetail> Table { get { return _table; } set { _table = value; } }
-
-        /// <summary>
-        /// Song table(Hide impressioned songs = true)
-        /// </summary>
-        public static IEnumerable AvoidFinishedTable
-        {
-            get
-            {
-                var itemSourceList = new CollectionViewSource() { Source = _table };
-                itemSourceList.Filter += new FilterEventHandler(SongListFilterByIsFinished);
-                return itemSourceList.View;
-            }
-        }
 
         /// <summary>
         /// Entry number.
@@ -70,20 +55,6 @@ namespace DeeImpressionChecker.Classes
         static SongDataTable()
         {
             _table = new ObservableCollection<SongDetail>();
-        }
-
-        /// <summary>
-        /// If IsFinished is true, hide the row.
-        /// </summary>
-        /// <param name="sender">sender</param>
-        /// <param name="e">e</param>
-        static private void SongListFilterByIsFinished(object sender, FilterEventArgs e)
-        {
-            var obj = e.Item as SongDetail;
-            if (obj != null)
-            {
-                e.Accepted = !obj.IsImpressioned;
-            }
         }
     }
 }
